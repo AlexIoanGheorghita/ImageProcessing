@@ -72,6 +72,19 @@ public class ImageProcessor {
     }
 
     /*
+     Method for retrieving an image name before converting it into a 2D array.
+    */
+    public static String getImageName(String path) {
+        String pathPrefix = path.split("://")[0];
+        // if path is a URL
+        if (pathPrefix.equalsIgnoreCase("http") || pathPrefix.equalsIgnoreCase("https")) {
+            return path.split("://")[1].split("/")[0].split("\\.")[0];
+        } else {
+            return path.split("\\\\")[path.split("\\\\").length - 1];
+        }
+    }
+
+    /*
      Method for decomposing a pixel hexadecimal value into individual values for red, green, blue and alpha channels.
     */
     public static int[] getRGBAValueFromPixel(int pixel) {
@@ -79,6 +92,9 @@ public class ImageProcessor {
         return new int[] {color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha()};
     }
 
+    /*
+     Method for creating a pixel hexadecimal value from separate RGBA values.
+    */
     public static int getIntValueFromRGBA(int[] rgba) {
         Color color = new Color(rgba[0], rgba[1], rgba[2], rgba[3]);
         return color.getRGB();
