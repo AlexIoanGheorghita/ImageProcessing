@@ -1,8 +1,12 @@
+import java.awt.image.BufferedImage;
 import java.util.Map;
 
 public class Transformations {
     public Transformations() {}
 
+    /*
+     Method for cropping an image in all directions - top, right, bottom, left
+    */
     public static int crop(int[][] imageMatrix, Map<String, Integer> sideValues, String newName) {
         Integer left = sideValues.get("left");
         Integer right = sideValues.get("right");
@@ -35,6 +39,9 @@ public class Transformations {
         }
     }
 
+    /*
+     Method for making an image brighter or darker
+    */
     public static void changeBrightness(int[][] imageMatrix, int offset, String newName) {
         int[][] newImage = new int[imageMatrix.length][imageMatrix[0].length];
 
@@ -72,7 +79,61 @@ public class Transformations {
         System.out.println("Adjusted brightness of image.");
     }
 
-    public static void adjustSize(int[][] imageMatrix, double sizeFactor, String newName) {
-        
+    /*
+     Method for enlarging or shrinking an image. Here it is more difficult to work directly with pixels (2D array),
+     especially when it comes to enlarging or shrinking an image by a decimal number. For a whole number it would be much easier.
+     For example, if the scaleFactor would be 2, then we would create a 2D array with twice the height and width of the original array.
+     Then, every second pixel position we would place the same pixel as in the previous position.
+    */
+//    public static void scale(int[][] imageMatrix, double scaleFactor, String newName) {
+//        // We need to transform the 2D array into an image.
+//        int[][] newImage = new int[(int)(imageMatrix.length * scaleFactor)][(int)(imageMatrix[0].length * scaleFactor)];
+//
+//        int loopCounter = 0;
+//
+//        while (loopCounter < newImage.length) {
+//            for (int j = 0; j < newImage[0].length; j++) {
+//
+//            }
+//
+//            loopCounter++;
+//        }
+//    }
+
+    public static void flipVertically(int[][] imageMatrix, String newName) {
+        int[][] flippedImage = flip(imageMatrix, "vertical");
+        ImageProcessor.matrixToImage(flippedImage, "./images/flip_vertical_" + newName);
+        System.out.println("Flipped image vertically");
+    }
+
+    public static void flipHorizontally(int[][] imageMatrix, String newName) {
+        int[][] flippedImage = flip(imageMatrix, "horizontal");
+        ImageProcessor.matrixToImage(flippedImage, "./images/flip_horizontal_" + newName);
+        System.out.println("Flipped image horizontally");
+    }
+
+    /*
+     Utility method for flipping an image (mirroring) either vertically or horizontally
+    */
+    private static int[][] flip(int[][] imageMatrix, String direction) {
+        int[][] newImage = new int[imageMatrix.length][imageMatrix[0].length];
+
+        // Using row-major order for vertical flip
+        if (direction.equals("vertical")) {
+            for (int i = 0; i < imageMatrix.length; i++) {
+                for (int j = 0; j < imageMatrix[0].length; j++) {
+                    newImage[i][j] = imageMatrix[i][(imageMatrix[i].length - 1) - j];
+                }
+            }
+        // Using column-major order for horizontal flip
+        } else if (direction.equals("horizontal")) {
+            for (int j = 0; j < imageMatrix[0].length; j++) {
+                for (int i = 0; i < imageMatrix.length; i++) {
+                    newImage[i][j] = imageMatrix[(imageMatrix[j].length - 1) - i][j];
+                }
+            }
+        }
+
+        return newImage;
     }
 }
