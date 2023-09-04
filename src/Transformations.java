@@ -1,4 +1,8 @@
+import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.Map;
 
 public class Transformations {
@@ -85,20 +89,25 @@ public class Transformations {
      For example, if the scaleFactor would be 2, then we would create a 2D array with twice the height and width of the original array.
      Then, every second pixel position we would place the same pixel as in the previous position.
     */
-//    public static void scale(int[][] imageMatrix, double scaleFactor, String newName) {
-//        // We need to transform the 2D array into an image.
-//        int[][] newImage = new int[(int)(imageMatrix.length * scaleFactor)][(int)(imageMatrix[0].length * scaleFactor)];
-//
-//        int loopCounter = 0;
-//
-//        while (loopCounter < newImage.length) {
-//            for (int j = 0; j < newImage[0].length; j++) {
-//
-//            }
-//
-//            loopCounter++;
-//        }
-//    }
+    public static void scale(BufferedImage inputImage, double scaleFactor, String newName) {
+        // Creating a new width and a new height
+        int newWidth = (int) (inputImage.getWidth() * scaleFactor);
+        int newHeight = (int) (inputImage.getHeight() * scaleFactor);
+
+        // Create an empty BufferedImage with the new size
+        BufferedImage scaledImage = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_RGB);
+
+        // Create a Graphics2D object which will be used as a canvas to paint the new image using the old one
+        Graphics2D g2d = scaledImage.createGraphics();
+        g2d.drawImage(inputImage, 0, 0, newWidth, newHeight, null);
+        g2d.dispose(); // clean up resources
+
+        try {
+            ImageIO.write(scaledImage, "jpg", new File("./images/scaled_" + newName));
+        } catch (IOException ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
 
     public static void flipVertically(int[][] imageMatrix, String newName) {
         int[][] flippedImage = flip(imageMatrix, "vertical");
